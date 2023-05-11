@@ -67,11 +67,12 @@ describe Crystalball::Rails::MapGenerator::I18nStrategy::SimplePatch do
     let(:locale) { :en }
     let(:data) { {user: {name: 'John'}} }
     let(:filename) { 'locale/foo.yml' }
+    let(:thread) { class_double(Thread) }
 
-    before { allow(Thread.current).to receive(:[]).with(:cb_locale_file_name) { filename } }
+    before { allow_any_instance_of(described_class).to receive(:get_cb_locale_file_name).and_return(filename) }
 
     it do
-      expect(instance).to receive(:cb_original_store_translations).with(locale, user: {name: {cb_filename: filename, cb_value: 'John'}})
+      expect(instance).to receive(:cb_original_store_translations).with(locale, { user: {name: {cb_filename: filename, cb_value: 'John'}} })
       subject
     end
 
