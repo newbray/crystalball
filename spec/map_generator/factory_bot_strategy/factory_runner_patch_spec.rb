@@ -42,8 +42,9 @@ describe Crystalball::MapGenerator::FactoryBotStrategy::FactoryRunnerPatch do
     let(:used_factories) { [] }
 
     before do
+      class_double('FactoryBotConstant::Internal', factory_by_name: nil).as_stubbed_const
       allow(Crystalball::MapGenerator::FactoryBotStrategy).to receive(:used_factories).and_return(used_factories)
-      allow(FactoryBotConstant).to receive(:factory_by_name).with(:bad_dummy) { double(name: :dummy) }
+      allow(FactoryBotConstant::Internal).to receive(:factory_by_name).with(:bad_dummy) { double(name: :dummy) }
       instance.instance_variable_set(:@name, :bad_dummy)
     end
 
