@@ -45,7 +45,7 @@ module Crystalball
           # Adds filename for each value
           def cb_patched_store_translations(locale, data, *args)
             data_unfreeze = data.dup
-            cb_add_filename_to_values(data_unfreeze, *get_cb_locale_file_name)
+            cb_add_filename_to_values(data_unfreeze, get_cb_locale_file_name)
             cb_original_store_translations(locale, data_unfreeze, *args)
           end
 
