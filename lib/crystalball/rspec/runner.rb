@@ -12,16 +12,29 @@ module Crystalball
       include PredictionPruning
 
       class << self
+        DRY_RUN_PREDICTION_FILE = "tmp/crystalball_prediction"
+
         def run(args, err = $stderr, out = $stdout)
           return config['runner_class'].run(args, err, out) unless config['runner_class'] == self
 
           Crystalball.log :info, "Crystalball starts to glow..."
           prediction = build_prediction
 
+          if dry_run?
+            File.open(DRY_RUN_PREDICTION_FILE, "w") { |f| prediction.each { |line| f.puts line } }
+            puts prediction
+            exit
+          end
+
           Crystalball.log :debug, "Prediction: #{prediction.first(5).join(' ')}#{'...' if prediction.size > 5}"
           Crystalball.log :info, "Starting RSpec."
 
           super(args + prediction, err, out)
+        end
+
+        def dry_run?
+          args = Hash[ ARGV.flat_map{|s| s.scan(/--?([^=\s]+)(?:=(\S+))?/) } ]
+          args.key?('dry-run')
         end
 
         def reset!
