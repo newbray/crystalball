@@ -42,7 +42,8 @@ module Crystalball
         end
 
         def guard_metadata_consistency(metadata)
-          uniq = metadata.uniq
+          # check for consistency except for timestamp - to enable parallel map generation
+          uniq = metadata.uniq{ |m| m.keys.concat(m.values_at(:type, :commit, :version)) }
           raise "Can't load execution maps with different metadata. Metadata: #{uniq}" if uniq.size > 1
         end
       end
